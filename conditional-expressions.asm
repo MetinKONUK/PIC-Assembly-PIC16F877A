@@ -144,7 +144,7 @@
 
 	FINISH_BLOCK:
 	    ; ---------- Your code ends here ----------------------------    
-	    ;MOVWF   PORTD    	; Send the result stored in WREG to PORTD to display it on the LEDs
+	    MOVWF   PORTD    	; Send the result stored in WREG to PORTD to display it on the LEDs
 
 	    LOOP    GOTO $	; Infinite loop
 		 END                               ; End of the program
