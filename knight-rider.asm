@@ -19,8 +19,9 @@
 	VAL	    EQU	    0x21
 	COUNT	    EQU	    0x22
 	    
-	X	    EQU	    0x23
-	Y	    EQU	    0x24
+	A	    EQU	    0x23
+	X	    EQU	    0x24
+	Y	    EQU	    0x25
 
 	; function calls
 	MAIN:
@@ -93,9 +94,33 @@
 	    
 	    RETURN
 	DELAY:
-	    CALL    DELAY250MS
-	    ;CALL    DELAY500MS
+	    ;CALL    DELAY250MS
+	    CALL    DELAY500MS
 	    RETURN
+	
+	DELAY500MS:
+	    MOVLW   d'2'
+	    MOVWF   A	
+	    
+	    DELAY500MS_MAINLOOP
+		MOVLW	d'250'
+		MOVWF	Y
+	    
+	    DELAY500MS_OUTERLOOP
+		MOVLW	d'250'
+		MOVWF	X
+	    
+	    DELAY500MS_INNERLOOP
+		NOP
+		DECFSZ	X, F	; X -= 1
+		GOTO	DELAY500MS_INNERLOOP
+		
+		DECFSZ	Y, F	; Y -= 1
+		GOTO	DELAY500MS_OUTERLOOP
+		
+		DECFSZ	A, F	; A -= 1
+		GOTO	DELAY500MS_MAINLOOP
+		RETURN
 	
 	DELAY250MS:
 	    MOVLW   d'250'
