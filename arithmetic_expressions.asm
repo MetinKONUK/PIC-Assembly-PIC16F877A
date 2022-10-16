@@ -13,17 +13,17 @@
     CLRF    PORTD	; Turn off all LEDs connected to PORTD
 
     ; ---------- Your code starts here --------------------------
-    ;variables
-    x EQU 0x20
-    y EQU 0x21
-    z EQU 0x22
- 
-    ;equations
-    r1 EQU 0x23
-    r2 EQU 0x24
-    r3 EQU 0x25
-    r4 EQU 0x26
-    r  EQU 0x27
+;variables
+x EQU 0x20
+y EQU 0x21
+z EQU 0x22
+
+;equations
+r1 EQU 0x23
+r2 EQU 0x24
+r3 EQU 0x25
+r4 EQU 0x26
+r  EQU 0x27
   
     ;auxilary space
     aux EQU 0x28
@@ -156,5 +156,5 @@
     ; ---------- Your code ends here ----------------------------    
     MOVWF   PORTD    	; Send the result stored in WREG to PORTD to display it on the LEDs
 
-    LOOP    GOTO $	; Infinite loop
-	 END                               ; End of the program
+LOOP    GOTO $	; Infinite loop
+     END                               ; End of the program
