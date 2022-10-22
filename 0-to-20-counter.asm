@@ -16,12 +16,12 @@
     ;BSF	PORTA, 4    ; select 3rd SSD from left
 
     ; ---------- Your code starts here --------------------------
-I	    EQU	    0x20
-J	    EQU	    0x21
-ITERATIONS  EQU	    0x22
-DIGIT0	    EQU	    0x23
-DIGIT1	    EQU	    0x24
-COUNTER	    EQU	    0x25
+I	    EQU	    0x20    ; iterator for delay function
+J	    EQU	    0x21    ; iterator for delay function
+ITERATIONS  EQU	    0x22    ; iterator, belongs to WHILE_LOOP
+DIGIT0	    EQU	    0x23    ; value of 2nd SSD from left
+DIGIT1	    EQU	    0x24    ; value of 1st SSD from left
+COUNTER	    EQU	    0x25    ; iterator, belongs to FOR_LOOP
 
     MOVLW   d'90'
     MOVWF   ITERATIONS
@@ -40,8 +40,8 @@ FOR_LOOP    ; while(i < ITERATIONS)
     MOVWF   PORTD	; display the first digit
     CALL    DELAY	; 5 millisecond delay
     
+    
     ; display the second digit
-
     BSF	    PORTA, 2	; select 1st SSD from left
     BCF	    PORTA, 3	; deselect the 2nd SSD from left
     
@@ -56,8 +56,9 @@ FOR_LOOP    ; while(i < ITERATIONS)
     INCF    COUNTER, F	; COUNTER++
     BTFSC   STATUS, C	    ; skip next if ITERATIONS <= COUNTER
     GOTO    FOR_LOOP
-    ; END FOR
-    CLRF    COUNTER
+    ; END FOR_LOOP
+    
+    CLRF    COUNTER	; COUNTER = 0
     
     INCF    DIGIT0, F	; DIGIT0++
     
@@ -72,7 +73,7 @@ FOR_LOOP    ; while(i < ITERATIONS)
     MOVLW   d'2'
     SUBWF   DIGIT1, W	; WREG = DIGIT1 - 2
     BTFSS   STATUS, Z	; fire next if DIGIT1 - 2 != 0
-    GOTO    WHILE_LOOP	; short circuit evaluation
+    GOTO    WHILE_LOOP	; short circuit evaluation, possible END WHILE_LOOP
     
     ; if(digit0 == 1)
     MOVLW   d'1'
@@ -80,19 +81,23 @@ FOR_LOOP    ; while(i < ITERATIONS)
     BTFSC   STATUS, Z	; skip next if DIGIT0 - 1 != 0
     CALL    IFF_BLOCK
     
-    GOTO    WHILE_LOOP
+    GOTO    WHILE_LOOP  ; END WHILE_LOOP
     
-IFF_BLOCK:
+IFF_BLOCK:  ; if digit1 == 2 and digit0 == 1
     CLRF    DIGIT0	; DIGIT0 = 0
     CLRF    DIGIT1	; DIGIT1 = 0
     RETURN
+    ; END IFF_BLOCK
     
-IF_BLOCK:
+    
+IF_BLOCK:   ; if digit0 == 10
     CLRF    DIGIT0	; DIGIT0 = 0
     INCF    DIGIT1, F	; DIGIT1++
     RETURN
+    ; END IF_BLOCK
     
-GETCODE:
+    
+GETCODE:    ; returns the proper binary code value for digit in WREG
     ADDWF   PCL, F  ; PROGRAM COUNTER REGISTER += WREG
     RETLW   B'00111111'		; 0
     RETLW   B'00000110'		; 1
@@ -106,7 +111,7 @@ GETCODE:
     RETLW   B'01101111'		; 9  
 
 
-DELAY:
+DELAY:	    ; freeze programme for 5 milliseconds
     MOVLW	d'5'
     MOVWF	I
 DELAY_OUTERLOOP
@@ -124,6 +129,6 @@ DELAY_INNERLOOP
     
     ; ---------- Your code ends here ----------------------------    
 
-LOOP    GOTO $	; Infinite loop
+LOOP    GOTO $	; Infinite loop, (unnecessary)
      END                               ; End of the program
 	 
